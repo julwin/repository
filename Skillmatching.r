@@ -36,25 +36,13 @@ AnforderungenDB <- read.csv("skillsDB.csv", sep=";")
 
 KenntnisseDB <- read.csv("skills.csv", sep=";")
 
-dim(AnforderungenDB)
-
-dim(KenntnisseDB)
-
-head(AnforderungenDB)
-
-head(KenntnisseDB)
-
 Kandidat <-KenntnisseDB[sample(nrow(KenntnisseDB),20, replace=F),]
-Kandidat
 
 Anforderungen <- AnforderungenDB[sample(nrow(AnforderungenDB), 10, replace=F),]
-Anforderungen
 
 Anforderungen$Skill <- sapply(Anforderungen$Skill, tolower)
-Anforderungen
 
 Kandidat <- tolower(Kandidat)
-Kandidat
 
 Anforderungen$Skill <- gsub("-", " ", Anforderungen$Skill)
 
@@ -75,20 +63,13 @@ kand_data <- data.frame(lapply(corpus_kand, as.character))
 anf_data <- t(anf_data)
 kand_data <- t(kand_data)
 
-anf_data
-
-kand_data
-
 rownames(anf_data)<- rownames(Anforderungen)
 colnames(anf_data) <- "Skill"
 rownames(kand_data)<- rownames(Kandidat)
 colnames(kand_data) <- "Skill"
 
-kand_data
 
 Anforderungen$Skill <- anf_data
-
-Anforderungen
 
 Kandidat <- kand_data
 
@@ -100,7 +81,6 @@ similarity_matrix <- data.frame(stringdistmatrix(Anforderungen$Skill,
                                                  useNames="strings",
                                                 useBytes = TRUE))
 
-similarity_matrix
 
 result <- t(sapply(seq(nrow(similarity_matrix)), function(i) {
   most_similar <- which.min(similarity_matrix[i,])
@@ -108,7 +88,6 @@ result <- t(sapply(seq(nrow(similarity_matrix)), function(i) {
     similarity_matrix[i,most_similar])
 }))
 
-result
 
 typeof(result["Distanz"])
 
@@ -117,8 +96,6 @@ colnames(result) <- c("Skillpaar","Distanz")
 result <- as.data.frame(result)
 result$Distanz <- as.numeric(as.character(result$Distanz))
 rownames(result) <- rownames(Anforderungen)
-
-result
 
 filter(result, Distanz<=0.20)
 cat("Anzahl der gematchten Skills:", nrow(filter(result, Distanz<=0.20)))
